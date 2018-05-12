@@ -1,23 +1,35 @@
 <?php
 
-$base_url = 'http://sv.net/dev/screenshot/uploads/';
+require_once 'config.php';
 
-$file = $_FILES["file"];
+$uniqid = getUniqueId(5);
+$filename = $uniqid . '.jpg';
+$filepath = './uploads/' . $filename;
 
-if ((int)$file['error']) {
-    exit('Error: an error occured');
-}
+$file = $_POST['file'];
 
-$info = getimagesize($file['tmp_name']);
+$base64_data = explode(',', $file);
+file_put_contents($filepath, base64_decode($base64_data[1]));
+
+$info = getimagesize($filepath);
 $type = $info['mime'];
-
-if ($type != 'image/jpeg') {
+if (!in_array($type, array('image/jpeg', 'image/png'))) {
     exit('Error: invalid file type');
 }
 
-$filename = uniqid() . '.jpeg';
-if (move_uploaded_file($file['tmp_name'], './uploads/' . $filename)) {
-    exit($base_url . $filename);
-} else {
-    exit('Error: an error occured while copying the upload file');
+exit($config['base_url'] . 'sc' . $uniqid);
+
+function getUniqueId($length)
+{
+    $random = '';
+    $add_number = true;
+    for ($i = 0; $i < $length; $i++) {
+        if ($add_number) {
+            $random .= rand(0, 9);
+        } else {
+            $random .= chr(rand(ord('a'), ord('z')));
+        }
+        $add_number = !$add_number;
+    }
+    return $random;
 }
