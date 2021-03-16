@@ -6,7 +6,13 @@ $uniqid = getUniqueId(5);
 $filename = $uniqid . '.jpg';
 $filepath = './uploads/' . $filename;
 
-$file = $_POST['file'];
+$request = $_POST;
+
+if (empty($request)) {
+    $request = json_decode(file_get_contents("php://input"), true);
+}
+
+$file = $request['file'];
 
 $base64_data = explode(',', $file);
 file_put_contents($filepath, base64_decode($base64_data[1]));
