@@ -1,4 +1,4 @@
-RewriteRule . - [E=REWRITEBASE:/php/screen-uploader-script/]
+RewriteRule . - [E=REWRITEBASE:/]
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^index
 RewriteCond %{REQUEST_URI} !^uploads
