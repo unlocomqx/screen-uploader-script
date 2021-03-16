@@ -1,7 +1,5 @@
-#RewriteEngine On
-#RewriteCond %{REQUEST_URI} !^index
-#RewriteRule (.*) /uploads/$1.jpeg [NC,L]
+RewriteRule . - [E=REWRITEBASE:/]
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^index
 RewriteCond %{REQUEST_URI} !^uploads
-RewriteRule ^sc(.*)$ /uploads/$1.jpg [NC,L]
+RewriteRule ^sc(.*)$ %{ENV:REWRITEBASE}uploads/$1.jpg [NC,L]
