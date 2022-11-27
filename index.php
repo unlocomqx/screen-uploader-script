@@ -8,18 +8,25 @@ $filepath = './uploads/' . $filename;
 
 $request = $_POST;
 
-if (empty($request)) {
-    $request = json_decode(file_get_contents("php://input"), true);
+$upload = $_FILES['file'] ?? null;
+
+if ((int) $upload['error'] || !(int) $upload['size']) {
+    exit('Error: invalid file');
 }
 
-$file = $request['file'];
+if ($upload['type'] !== 'image/jpg') {
+    exit('Error: invalid file type');
+}
 
-$base64_data = explode(',', $file);
-file_put_contents($filepath, base64_decode($base64_data[1]));
+if (!move_uploaded_file($upload['tmp_name'], $filepath)) {
+    exit('Error: failed to save file');
+}
 
 $info = getimagesize($filepath);
 $type = $info['mime'];
+
 if (!in_array($type, array('image/jpeg', 'image/png'))) {
+    unlink($filepath);
     exit('Error: invalid file type');
 }
 
